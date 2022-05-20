@@ -1,0 +1,49 @@
+<!DOCTYPE html PUBLIC "HTML 4.01//EN">
+<html>
+
+<head>
+    <title>Sécurité informatique</title>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../css/form.css">
+</head>
+
+<body>
+    <div class="page">
+        <form action="/users/register" method="POST">
+            <h2>Sign up</h2>
+
+            <div class="error-container">
+                <% if(typeof errors !='undefined' ) { %>
+                    <% errors.forEach(error=>{ %>
+                        <p class="error">
+                            <%= error.message %>
+                        </p>
+                        <% }) %>
+                            <% } %>
+            </div>
+
+            <div class="input-wrap">
+                <label for="username">Username</label>
+                <input type="text" placeholder="Type your usersame" name="username" required />
+            </div>
+            <div class="input-wrap">
+                <label for="email">Email</label>
+                <input type="email" placeholder="Type your email" name="email" required />
+            </div>
+            <div class="input-wrap">
+                <label for="password">Password</label>
+                <input type="password" placeholder="Type your password" name="password" required />
+            </div>
+            <div class="input-wrap">
+                <label for="password2">Password</label>
+                <input type="password" placeholder="Confirm your password" name="password2" required />
+            </div>
+            <button type="submit">SIGN UP</button>
+            <a href="/users/login">Already registered? Login here</a>
+        </form>
+    </div>
+</body>
+
+</html>

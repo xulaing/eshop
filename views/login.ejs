@@ -1,0 +1,43 @@
+<!DOCTYPE html PUBLIC "HTML 4.01//EN">
+<html>
+
+<head>
+    <title>Sécurité informatique</title>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../css/form.css">
+</head>
+
+<body>
+    <div class="page">
+        <form action="/users/login" method="POST">
+            <h2>Login</h2>
+
+            <% if(messages.sucess_msg){ %>
+                <p class="sucess">
+                    <%= messages.sucess_msg %>
+                </p>
+                <% } %>
+
+                    <% if(messages.error){ %>
+                        <p class="error">
+                            <%= messages.error %>
+                        </p>
+                        <% } %>
+
+                            <div class="input-wrap">
+                                <label for="email">Email</label>
+                                <input type="email" placeholder="Type your email" name="email" />
+                            </div>
+                            <div class="input-wrap">
+                                <label for="password">Password</label>
+                                <input type="password" placeholder="Type your password" name="password" />
+                            </div>
+                            <button type="submit">LOGIN</button>
+                            <a href="/users/register">Sign Up</a>
+        </form>
+    </div>
+</body>
+
+</html>
