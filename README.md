@@ -1,12 +1,3 @@
-# Sécurité Informatique | Projet
-
-### Lucie Bottin & Céline Khauv
-
-Dans le cadre du projet, nous avons réalisé un site web contenant 4 pages : la page principale, la page de connection, la page d'inscription et un dashboard pour l'utilisateur est connecté.<br />
-Il est possible de tester les injections SQL sur le formulaire de connection.
-
-### Dans le fichier server.js, entre les lignes 97 et 134, il est possible de choisir si on veut rendre les injections possible ou non.
-
 ## Lancer l'application
 
 - npm install
