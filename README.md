@@ -25,7 +25,7 @@ N'oubliez pas de créer votre base de donnée (ici, appelée "eshop") et votre t
 
 
 ## Créer la liste des produits de nous boutique en MongoBD (on utilise Mongoose pour connecter MongoDB à NodeJS)
-
+pip install mongoose
 ### Installation MongoDB avec docker
 docker pull mongo
 docker run --name mongo -d mongo # mongo c'est aussi le nom de notre conteneur ici
