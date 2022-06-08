@@ -22,3 +22,14 @@ N'oubliez pas de créer votre base de donnée (ici, appelée "eshop") et votre t
 - CREATE SEQUENCE id_seq;
 
 - ALTER TABLE users ALTER COLUMN id SET DEFAULT nextval('cateogry_id_seq'::regclass);
+
+
+## Créer la liste des produits de nous boutique en MongoBD (on utilise Mongoose pour connecter MongoDB à NodeJS)
+
+### Installation MongoDB avec docker
+docker pull mongo
+docker run --name mongo -d mongo # mongo c'est aussi le nom de notre conteneur ici
+docker exec -it mongo bash
+/# mongo
+
+Notre base de données s'appelle shopping : use shopping
