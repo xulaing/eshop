@@ -1,14 +1,25 @@
 const express = require("express");
-const app = express();
 const { pool } = require("./dbConfig");
 const session = require("express-session");
 const flash = require("express-flash");
 const passport = require("passport");
 const bcrypt = require("bcrypt");
+var mongoose = require('mongoose');
+const app = express();
+var path = require('path');
+const hbs = require('hbs');
+//var bootstrap = require('bootstrap');
 
-const initializePassport = require("./passportConfig");
+// Mongoose connects Express to MongoDB
+mongoose.connect('mongodb://127.0.0.1/shopping');
 
-initializePassport(passport);
+
+//const initializePassport = require("./passportConfig");
+
+//initializePassport(passport);
+
+
+
 
 const PORT = process.env.PORT || 4000;
 app.use("/css", express.static("css"));
@@ -22,15 +33,31 @@ app.use(
   })
 );
 
-app.use(passport.initialize());
-app.use(passport.session());
+//app.use(passport.initialize());
+//app.use(passport.session());
 
 app.use(flash());
 
-app.set("view engine", "ejs");
+//app.set("view engine", "ejs");
+app.set('views', path.join(__dirname))
+app.set('view engine', 'hbs')
 
-app.get("/", (req, res) => {
-  res.render("index");
+
+app.get('/', function(req, res){
+  res.render('shopping');
+  });
+
+/*app.get("/", (req, res) => {
+  res.render("shopping");
+});*/
+
+
+app.get("/cart", (req, res) => {
+  res.render("cart");
+});
+
+app.get("/shopping", (req, res) => {
+  res.render("shopping");
 });
 
 app.get("/users/register", checkAuthenticated, (req, res) => {
@@ -129,8 +156,8 @@ app.post("/users/login", function (req, res) {
       res.render("dashboard", { user: user.name });
     }
   });
-});*/
-
+});
+*/
 
 function checkAuthenticated(req, res, next) {
   if (req.isAuthenticated()) {
@@ -147,5 +174,5 @@ function checkNotAuthenticated(req, res, next) {
 }
 
 app.listen(PORT, () => {
-  console.log(`Server ruuning on port ${PORT}`);
+  console.log(`Server running on port ${PORT}`);
 });

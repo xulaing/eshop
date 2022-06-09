@@ -1,0 +1,10 @@
+var express = require('express');
+var router = express.Router();
+var Product = require('../models/product');
+/* Home */ 
+router.get('/', function(req,res,next) {
+    var products = Product.find();
+    res.render('shop/index', {title: "Shopping Cart", products: products});
+});
+
+module.exports = router;
