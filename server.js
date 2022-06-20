@@ -13,6 +13,8 @@ var logger = require('morgan');
 var bodyParser = require("body-parser");
 var hbs = require('express-handlebars');
 var mongoose = require('mongoose');
+//var bootstrap = require('bootstrap');
+
 (async ()=>{
   try{
     await mongoose.connect('mongodb://localhost:27017/shopping'); // Database will be created automatically into mongodb
@@ -32,7 +34,7 @@ var routes = require('./routes/index');
 var routes_cart = require('./routes/cart');
 /********************************** */
 
-// Using HandlingBars and EJS
+// Using HandlingBars 
 app.set('view engine', 'hbs')
 app.engine('hbs', hbs.engine({
   extname: 'hbs', 
@@ -40,10 +42,6 @@ app.engine('hbs', hbs.engine({
   layoutsDir: path.join(__dirname, 'views/layouts'),
   partialsDir  : path.join(__dirname, 'views/partials')
 }));
-
-//const ejs = require('ejs');
-//app.set("view engine", "ejs");
-
 
 app.use(logger('dev'));
 app.use(express.json());
@@ -55,7 +53,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', routes);
 app.use('/cart', routes_cart);
 
-//var bootstrap = require('bootstrap');
 
 const initializePassport = require("./passportConfig");
 initializePassport(passport);
