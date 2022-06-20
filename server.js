@@ -1,29 +1,28 @@
 // Imports
 const express = require("express");
 const { pool } = require("./dbConfig");
+var favicon = require('serve-favicon');
 const session = require("express-session");
 const flash = require("express-flash");
 const passport = require("passport");
 const bcrypt = require("bcrypt");
-var mongoose = require('mongoose');
 var createError = require('http-errors');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var bodyParser = require("body-parser");
+var hbs = require('express-handlebars');
+var mongoose = require('mongoose');
+mongoose.connect('mongodb://localhost:27017/shopping');
 
-var indexRouter = require('./routes/index');
 const app = express();
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
-var hbs = require('express-handlebars');
 const ejs = require('ejs');
 var routes = require('./routes/index')
 /********************************** */
-
-
 
 // Using HandlingBars and EJS
 app.set('view engine', 'hbs')
@@ -37,17 +36,25 @@ app.engine('hbs', hbs.engine({
 //app.set("view engine", "ejs");
 
 /********************************** */
+/****************Handle articles ******************/
+var router = express.Router();
+var Product = require('./models/product');
+var shoppinDB = require("./models/product-seeder");
 
+
+
+
+/************************************************ */
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
-
-app.use('/', indexRouter);
-
+app.use('/', routes);
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
+/*app.use(function(req, res, next) {
   next(createError(404));
 });
 
@@ -60,29 +67,9 @@ app.use(function(err, req, res, next) {
   // render the error page
   res.status(err.status || 500);
   res.render('error');
-});
+});*/
 
-/****************Handle articles ******************/
-var router = express.Router();
-var Product = require('./models/product');
-const { sensitiveHeaders } = require("http2");
-var shoppinDB = require("./models/product-seeder");
-app.use('/', routes);
-// Mongoose connects Express to MongoDB
-//mongoose.connect('mongodb://localhost/shopping'); // Database will be created automatically into mongodb
 
-app.get('/', function(req, res, next) {
-  Product.find(function(err, docs){
-      var productChunks = [];
-      var chunkSize = 3;
-      for (var i=0; i<docs.length;i++){
-          productChunks.push(docs.slice(i, i+chunkSize));
-      }
-      res.render('./shop/shopping', {products: docs});
-  })
-});
-//module.exports = router
-/************************************************ */
 
 
 //var bootstrap = require('bootstrap');

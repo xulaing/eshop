@@ -7,18 +7,16 @@ var path = require('path');
 var router = express.Router();
 var Product = require('../models/product');
 /* Home */ 
-// Mongoose connects Express to MongoDB
-mongoose.connect('mongodb://localhost/shopping');
-
 router.get('/', function(req, res, next) {
-  Product.find(function(err, docs){
-      var productChunks = [];
-      var chunkSize = 3;
-      for (var i=0; i<docs.length;i++){
-          productChunks.push(docs.slice(i, i+chunkSize));
-      }
-      res.render('./shop/shopping', {products: docs});
-  })
+  Product.find(function(err, product){
+      // check for and handle query errors
+      /*if (err) {
+        console.error('Product.find() error', err);
+        return next(err);
+      }*/
+      console.log(product);
+      res.render('./shop/shopping', {title:'Shopping cart', products: product});
+  });
 });
 module.exports = router
 /************************************************ */
