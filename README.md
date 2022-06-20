@@ -24,8 +24,11 @@ N'oubliez pas de créer votre base de donnée (ici, appelée "eshop") et votre t
 - ALTER TABLE users ALTER COLUMN id SET DEFAULT nextval('cateogry_id_seq'::regclass);
 
 
-## Créer la liste des produits de nous boutique en MongoBD (on utilise Mongoose pour connecter MongoDB à NodeJS)
-npm install mongoose
-Installer MongoDB et démarrer le service : systemctl service mongod start 
+## Créer la liste des produits de notre boutique sur MongoBD (on utilise Mongoose pour connecter MongoDB à NodeJS)
+- Installer Mongoose : npm install mongoose
+- Installer MongoDB : https://www.mongodb.com/docs/manual/tutorial/install-mongodb-on-windows/ 
+- Démarrer le service : systemctl service mongod start 
 
-Notre base de données s'appelle shopping : use shopping
+- Ouvrir un terminal : mongo 
+- Rentrer dans notre base de données : use shopping
+- Pour vérifier après avoir lancé le serveur.js que les produits ont bien été sauvegardés dans cette dernière : db.products.find()
