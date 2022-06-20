@@ -1,3 +1,4 @@
+// Imports
 const express = require("express");
 const { pool } = require("./dbConfig");
 const session = require("express-session");
@@ -5,24 +6,94 @@ const flash = require("express-flash");
 const passport = require("passport");
 const bcrypt = require("bcrypt");
 var mongoose = require('mongoose');
-const app = express();
+var createError = require('http-errors');
 var path = require('path');
-const hbs = require('hbs');
+var cookieParser = require('cookie-parser');
+var logger = require('morgan');
+var bodyParser = require("body-parser");
+
+var indexRouter = require('./routes/index');
+const app = express();
+const PORT = process.env.PORT || 4000;
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
+var hbs = require('express-handlebars');
+const ejs = require('ejs');
+var routes = require('./routes/index')
+/********************************** */
+
+
+
+// Using HandlingBars and EJS
+app.set('view engine', 'hbs')
+app.engine('hbs', hbs.engine({
+  extname: 'hbs', 
+  defaultLayout: 'layout', 
+  layoutsDir: path.join(__dirname, 'views/layouts'),
+  partialsDir  : path.join(__dirname, 'views/partials')
+}));
+
+//app.set("view engine", "ejs");
+
+/********************************** */
+
+app.use(logger('dev'));
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+app.use(cookieParser());
+app.use(express.static(path.join(__dirname, 'public')));
+
+app.use('/', indexRouter);
+
+// catch 404 and forward to error handler
+app.use(function(req, res, next) {
+  next(createError(404));
+});
+
+// error handler
+app.use(function(err, req, res, next) {
+  // set locals, only providing error in development
+  res.locals.message = err.message;
+  res.locals.error = req.app.get('env') === 'development' ? err : {};
+
+  // render the error page
+  res.status(err.status || 500);
+  res.render('error');
+});
+
+/****************Handle articles ******************/
+var router = express.Router();
+var Product = require('./models/product');
+const { sensitiveHeaders } = require("http2");
+var shoppinDB = require("./models/product-seeder");
+app.use('/', routes);
+// Mongoose connects Express to MongoDB
+//mongoose.connect('mongodb://localhost/shopping'); // Database will be created automatically into mongodb
+
+app.get('/', function(req, res, next) {
+  Product.find(function(err, docs){
+      var productChunks = [];
+      var chunkSize = 3;
+      for (var i=0; i<docs.length;i++){
+          productChunks.push(docs.slice(i, i+chunkSize));
+      }
+      res.render('./shop/shopping', {products: docs});
+  })
+});
+//module.exports = router
+/************************************************ */
+
+
 //var bootstrap = require('bootstrap');
 
-// Mongoose connects Express to MongoDB
-mongoose.connect('mongodb://127.0.0.1/shopping');
 
 
 //const initializePassport = require("./passportConfig");
 
 //initializePassport(passport);
 
-
-
-
-const PORT = process.env.PORT || 4000;
-app.use("/css", express.static("css"));
+app.use("/public/stylesheets", express.static("/public/stylesheets"));
 app.use(express.urlencoded({ extended: false }));
 
 app.use(
@@ -38,27 +109,15 @@ app.use(
 
 app.use(flash());
 
-//app.set("view engine", "ejs");
-app.set('views', path.join(__dirname))
-app.set('view engine', 'hbs')
 
-
-app.get('/', function(req, res){
-  res.render('shopping');
-  });
-
-/*app.get("/", (req, res) => {
-  res.render("shopping");
-});*/
-
+app.get("/account", (req, res) => {
+  res.render("./account/account");
+});
 
 app.get("/cart", (req, res) => {
-  res.render("cart");
+  res.render("./cart");
 });
 
-app.get("/shopping", (req, res) => {
-  res.render("shopping");
-});
 
 app.get("/users/register", checkAuthenticated, (req, res) => {
   res.render("register");
@@ -133,32 +192,6 @@ app.post(
   })
 );
 
-/*
-// Connection non sécurisée
-app.post("/users/login", function (req, res) {
-  var email = req.body.email;
-  var password = req.body.password;
-  var query =
-    "SELECT name FROM users where email = '" + email + "' and password = '" + password + "'";
-
-  console.log("email: " + email);
-  console.log("password: " + password);
-  console.log("query: " + query);
-
-  pool.query(query, (err, response) => {
-    if (err) {
-      console.log('here');
-      throw err;
-    } else if (response.rowCount == 0) {
-      res.redirect("/users/login");
-    } else {
-      const user = response.rows[0];
-      res.render("dashboard", { user: user.name });
-    }
-  });
-});
-*/
-
 function checkAuthenticated(req, res, next) {
   if (req.isAuthenticated()) {
     return res.redirect("/users/dashboard");
@@ -173,6 +206,6 @@ function checkNotAuthenticated(req, res, next) {
   res.redirect("/users/login");
 }
 
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+
+
+module.exports = app
