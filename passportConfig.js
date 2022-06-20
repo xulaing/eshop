@@ -3,8 +3,6 @@ const { pool } = require("./dbConfig");
 const bcrypt = require("bcrypt");
 
 function initialize(passport) {
-  console.log("Initialized");
-
   const authenticateUser = (email, password, done) => {
     pool.query(
       `SELECT * FROM users WHERE email = $1`,

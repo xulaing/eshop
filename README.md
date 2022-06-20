@@ -15,10 +15,12 @@ N'oubliez pas de créer votre base de donnée (ici, appelée "eshop") et votre t
   id BIGSERIAL PRIMARY KEY NOT NULL,
   name VARCHAR(200) NOT NULL,
   email VARCHAR(200) NOT NULL,
-  password VARCHAR(200) NOT NULL,
+  password VARCHAR(200) NOT NULL, 
+  level INTEGER NOT NULL,
   UNIQUE(email)
   );
 
 - CREATE SEQUENCE id_seq;
 
 - ALTER TABLE users ALTER COLUMN id SET DEFAULT nextval('cateogry_id_seq'::regclass);
+- ALTER TABLE users ALTER COLUMN level SET DEFAULT 1;

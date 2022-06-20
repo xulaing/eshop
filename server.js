@@ -10,7 +10,7 @@ const initializePassport = require("./passportConfig");
 
 initializePassport(passport);
 
-const PORT = process.env.PORT || 4000;
+const PORT = process.env.PORT || 8085;
 app.use("/css", express.static("css"));
 app.use(express.urlencoded({ extended: false }));
 
@@ -80,8 +80,8 @@ app.post("/users/register", async (req, res) => {
           res.render("register", { errors });
         } else {
           pool.query(
-            `insert into users(name, email, password) values ($1, $2, $3) RETURNING id, password`,
-            [username, email, hashedPassword],
+            `insert into users(name, email, password, level) values ($1, $2, $3, $4) RETURNING id, password`,
+            [username, email, hashedPassword, 1],
             (err, response) => {
               if (err) {
                 throw err;
@@ -131,6 +131,19 @@ app.post("/users/login", function (req, res) {
   });
 });*/
 
+app.get("/users/administrator", checkAdministrator, (req, res) => {
+  var query = "SELECT id, name, email, level from users"
+  pool.query(query, (err, response) => {
+    if (err) {
+      console.log('here');
+      throw err;
+    } else {
+      const users = response.rows;
+      console.log(users);
+      res.render("admin", { users: users })
+    }
+  })
+})
 
 function checkAuthenticated(req, res, next) {
   if (req.isAuthenticated()) {
@@ -144,6 +157,15 @@ function checkNotAuthenticated(req, res, next) {
     return next();
   }
   res.redirect("/users/login");
+}
+
+function checkAdministrator(req, res, next) {
+  if (req.isAuthenticated() && (req.user.level === 0)) {
+    return next();
+  } else if (req.isAuthenticated()) {
+    return res.redirect("/users/login");
+  }
+  return res.redirect(403, "/error");
 }
 
 app.listen(PORT, () => {
