@@ -2,25 +2,23 @@
 <html>
 
 <head>
-    <%- include('../partials/head'); %>
+    {{>head}}
 </head>
 
 <body>
     <header>
-        <%- include('../partials/header'); %>
+        {{header}}
     </header>
     <div class="page">
         <form action="/users/register" method="POST">
             <h2>Sign up</h2>
 
             <div class="error-container">
-                <% if(typeof errors !='undefined' ) { %>
-                    <% errors.forEach(error=>{ %>
-                        <p class="error">
-                            <%= error.message %>
-                        </p>
-                        <% }) %>
-                            <% } %>
+                {{#if errors }}
+                    {{#each errors}}
+                         <p class="error">{{ error.message}} </p>
+                    {{/each}}
+                {{/if}}
             </div>
 
             <div class="input-wrap">
@@ -45,7 +43,7 @@
     </div>
 
     <footer>
-        <%- include('../partials/footer'); %>
+        {{>footer}}
     </footer>
 </body>
 

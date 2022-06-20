@@ -8,24 +8,24 @@
     </header>
     {{# each products}}
         <div class="row">
-
+            {{products}}
             {{# each this}}
             <div class="col-sm-6 col-md-4">
                 <div class="thumbnail">
-                    <img src={{this.imagePath}} alt="..." class="img-responsive" width="400" height="500">
+                    <img src='https://fs-prod-cdn.nintendo-europe.com/media/images/10_share_images/portals_3/SI_Hub_Zelda_Portal_image1280w.jpg' alt="..." class="img-responsive" width="400" height="500">
                     <div class="caption">
                         <h3>{{this.title}}</h3>
                         <p class="description">{{this.description}}</p>
                         <div class="clearfix">
-                            <div class="price pull-left">${{this.price}}</div>
-                            <a href="/cart" class="btn btn-success pull-right" role="button">Button</a>
+                            <div class="price pull-left">€ {{this.price}}</div>
+                            <a href="/cart" class="btn btn-success pull-right" role="button">Add to shopping cart</a> 
                         </div>
                     </div>
                 </div>
             </div>
             {{/each}}
-
         </div>
+
 
     {{/each}}
     <footer>

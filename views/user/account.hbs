@@ -1,14 +1,9 @@
-|<head>
-  {{>head}}
-</head>
-
 <header>
   {{>header}}
 </header>
 
-
 <h1>{{title}}</h1>
-{{# if products }}
+{{# if connected }}
     <div class="cart page">
         <ul class="list-group">
             {{# each products }}
@@ -38,5 +33,12 @@
         <a href="#" type="button" class="btn btn-success">Checkout</a>
     </div>
 {{ else }}
-    Your shopping cart is empty.
+    <div class="text-right">
+        <a href="/users/login" type="button" class="btn btn-success">Login</a>
+        <a href="/users/register" type="button" class="btn btn-success">Register</a>
+    </div>
 {{/if}}
+
+<footer>
+    {{>footer}}
+</footer>

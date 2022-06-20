@@ -13,15 +13,23 @@ var logger = require('morgan');
 var bodyParser = require("body-parser");
 var hbs = require('express-handlebars');
 var mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost:27017/shopping');
+(async ()=>{
+  try{
+    await mongoose.connect('mongodb://localhost:27017/shopping'); // Database will be created automatically into mongodb
+  }
+  catch{
+      console.log("erreur dans serveur.js");
+  }
+})();
+
 
 const app = express();
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
-const ejs = require('ejs');
-var routes = require('./routes/index')
+var routes = require('./routes/index');
+var routes_cart = require('./routes/cart');
 /********************************** */
 
 // Using HandlingBars and EJS
@@ -33,18 +41,10 @@ app.engine('hbs', hbs.engine({
   partialsDir  : path.join(__dirname, 'views/partials')
 }));
 
+//const ejs = require('ejs');
 //app.set("view engine", "ejs");
 
-/********************************** */
-/****************Handle articles ******************/
-var router = express.Router();
-var Product = require('./models/product');
-var shoppinDB = require("./models/product-seeder");
 
-
-
-
-/************************************************ */
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -53,32 +53,12 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', routes);
-// catch 404 and forward to error handler
-/*app.use(function(req, res, next) {
-  next(createError(404));
-});
-
-// error handler
-app.use(function(err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
-
-  // render the error page
-  res.status(err.status || 500);
-  res.render('error');
-});*/
-
-
-
+app.use('/cart', routes_cart);
 
 //var bootstrap = require('bootstrap');
 
-
-
-//const initializePassport = require("./passportConfig");
-
-//initializePassport(passport);
+const initializePassport = require("./passportConfig");
+initializePassport(passport);
 
 app.use("/public/stylesheets", express.static("/public/stylesheets"));
 app.use(express.urlencoded({ extended: false }));
@@ -91,36 +71,32 @@ app.use(
   })
 );
 
-//app.use(passport.initialize());
-//app.use(passport.session());
+app.use(passport.initialize());
+app.use(passport.session());
 
 app.use(flash());
 
 
 app.get("/account", (req, res) => {
-  res.render("./account/account");
-});
-
-app.get("/cart", (req, res) => {
-  res.render("./cart");
+  res.render("./user/account");
 });
 
 
 app.get("/users/register", checkAuthenticated, (req, res) => {
-  res.render("register");
+  res.render("./user/register");
 });
 
 app.get("/users/login", checkAuthenticated, (req, res) => {
-  res.render("login");
+  res.render("./user/login");
 });
 
 app.get("/users/dashboard", checkNotAuthenticated, (req, res) => {
-  res.render("dashboard", { user: req.user.name });
+  res.render("./user/dashboard", { user: req.user.name });
 });
 
 app.get("/users/logout", (req, res) => {
   req.logout();
-  res.render("index", { message: "You have logged out successfully" });
+  res.render("/", { message: "You have logged out successfully" });
 });
 
 app.post("/users/register", async (req, res) => {
@@ -137,7 +113,7 @@ app.post("/users/register", async (req, res) => {
   }
 
   if (errors.length > 0) {
-    res.render("register", { errors });
+    res.render("./user/register", { errors });
   } else {
     hashedPassword = await bcrypt.hash(password, 10);
     // Form validation has passed
@@ -160,7 +136,7 @@ app.post("/users/register", async (req, res) => {
                 throw err;
               }
               req.flash("sucess_msg", "You are now registered. Please log in");
-              res.redirect("/users/login");
+              res.redirect("users/login");
             }
           );
         }
@@ -192,7 +168,5 @@ function checkNotAuthenticated(req, res, next) {
   }
   res.redirect("/users/login");
 }
-
-
 
 module.exports = app

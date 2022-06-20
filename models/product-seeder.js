@@ -1,59 +1,40 @@
 var Product = require('../models/product');
 var path = require('path');
-//const { exit } = require('process');
 // Mongoose connects Express to MongoDB
 var mongoose = require('mongoose');
 var products = [
     new Product({
-    imagePath: 'zelda.jpg',
+    imagePath: 'https://fs-prod-cdn.nintendo-europe.com/media/images/10_share_images/portals_3/SI_Hub_Zelda_Portal_image1280w.jpg',
     title: 'Zelda',
     description: 'Awesome Game !!!',
-    price: 50
+    price: 50,
     }),
     new Product({
-        imagePath: 'zelda.jpg',
+        imagePath: 'https://fs-prod-cdn.nintendo-europe.com/media/images/10_share_images/portals_3/SI_Hub_Zelda_Portal_image1280w.jpg',
         title: 'Zelda',
         description: 'Awesome Game !!!',
-        price: 50
+        price: 50,
     }),
     new Product({
-        imagePath: 'zelda.jpg',
+        imagePath: 'https://fs-prod-cdn.nintendo-europe.com/media/images/10_share_images/portals_3/SI_Hub_Zelda_Portal_image1280w.jpg',
         title: 'Zelda',
         description: 'Awesome Game !!!',
-        price: 50
+        price: 50,
     }),
     new Product({
-        imagePath: 'zelda.jpg',
+        imagePath: 'https://fs-prod-cdn.nintendo-europe.com/media/images/10_share_images/portals_3/SI_Hub_Zelda_Portal_image1280w.jpg',
         title: 'Zelda',
         description: 'Awesome Game !!!',
-        price: 50
+        price: 50,
     })
 ];
 
 
 (async ()=>{
-    (async () =>{
-      try{
+    try{
         await mongoose.connect('mongodb://localhost:27017/shopping'); // Database will be created automatically into mongodb
         console.log("connexion réussie avec la bdd shopping");
-        const article = new Product(
-            {
-                imagePath: 'zelda.jpg',
-                title: 'Zelda',
-                description: 'Awesome Game !!!',
-                price: 50
-            }
-        );
-        var result = await article.save();
-        console.log(result);
-      }
-      catch{
-        console.log("erreur");
-      }
-    })();
-})
-
-/**var done = 0;
+        var done = 0;
         for (var i = 0; i < products.length; i++){
             products[i].save(function(err, result){
                 done++;
@@ -61,7 +42,13 @@ var products = [
                     exit();
                 }
             });
-        } */
+        }
+        console.log("sauvegarde dans la bdd shopping réussie")
+    }
+    catch{
+        console.log("erreur");
+    }
+})();
 
 
 function exit(){
