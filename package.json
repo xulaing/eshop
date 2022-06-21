@@ -177,6 +177,7 @@
     "path-is-absolute": "^1.0.1",
     "path-to-regexp": "^0.1.7",
     "pause": "^0.0.1",
+    "paypal-rest-sdk": "^1.8.1",
     "pg": "^8.7.3",
     "pg-connection-string": "^2.5.0",
     "pg-int8": "^1.0.1",
