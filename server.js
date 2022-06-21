@@ -132,7 +132,7 @@ app.post("/users/register", async (req, res) => {
               if (err) {
                 throw err;
               }
-              req.flash("sucess_msg", "You are now registered. Please log in");
+              req.flash("success_msg", "You are now registered. Please log in");
               res.redirect("users/login");
             }
           );
@@ -247,10 +247,23 @@ app.post('/pay', (req, res) => {
             }
         }
       });
-      
+
       });
 
   app.get('/cancel', (req, res) => res.redirect("/users/dashboard"));
+  app.get('/success', async (req, res) => { 
+
+    await sleep(10000);
+
+    function sleep(ms) {
+      return new Promise((resolve) => {
+        setTimeout(resolve, ms);
+      });
+    };
+
+    res.redirect("/users/dashboard")
+  }
+  );
 
 // app.listen(3000, () => console.log(`Server Started on 3000`));
 
