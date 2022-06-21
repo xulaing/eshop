@@ -137,7 +137,8 @@ app.get("/users/administrator", checkAdministrator, (req, res) => {
     if (err) {
       console.log('here');
       throw err;
-    } else {
+    } 
+    else {
       const users = response.rows;
       console.log(users);
       console.log(req.user);
@@ -145,6 +146,59 @@ app.get("/users/administrator", checkAdministrator, (req, res) => {
     }
   })
 })
+
+app.get("/users/profile", checkAdministrator, (req, res) => {
+  var query = "SELECT id, name, email, level from users"
+  pool.query(query, (err, response) => {
+    if (err) {
+      console.log('here');
+      throw err;
+    } else {
+      const users = response.rows;
+      console.log(users);
+      console.log(req.user);
+      res.render("profile", { name: req.user.name, email: req.user.email });
+    }
+  })
+})
+
+app.post("/users/profile", async (req, res) => {
+  let { email, username, password, password2 } = req.body;
+
+  let errors = [];
+  if (password != password2) {
+    errors.push({ message: "Passwords do not match" });
+  }
+  console.log(password, password2, username)
+  if (errors.length > 0) {
+    res.render("profile", { errors });
+  } else {
+    hashedPassword = await bcrypt.hash(password, 10);
+    // Form validation has passed
+    pool.query(
+      `select * from users where email = $1`,
+      [email],
+      (err, response) => {
+        if (err) {
+          throw err;
+        }
+        else {
+          let query = "update users set name='" + username + "', password='" + hashedPassword + "' where email='" + email + "'";
+          pool.query(
+            query,
+            (err, response) => {
+              if (err) {
+                throw err;
+              }
+              res.redirect("/users/login");
+            }
+          );
+        }
+      }
+    );
+  }
+});
+
 
 function checkAuthenticated(req, res, next) {
   if (req.isAuthenticated()) {

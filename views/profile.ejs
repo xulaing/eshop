@@ -1,0 +1,51 @@
+<!DOCTYPE html PUBLIC "HTML 4.01//EN">
+<html>
+
+<head>
+    <title>Sécurité informatique</title>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/admin.css">
+</head>
+
+<body>
+    <nav>
+        <div id="shop">
+            <a href="/users/dashboard">Shopping</a>
+        </div>
+        <div id="management">
+            <a href="">Cart</a>
+            <a href="">Account</a>
+        </div>
+    </nav>
+    <h1><%= name%> Profile</h1>
+    <div class="page">
+        <form action="/users/profile" method="POST">
+            <h2>Update Informations</h2>
+
+            
+            <div class="input-wrap">
+                <label for="email">Confirm email</label>
+                <input type="email" placeholder="<%= email%>" name="email" required />
+            </div> 
+            <div class="input-wrap">
+                <label for="username">New username</label>
+                <input type="text" placeholder="<%= name%>" name="username" required />
+            </div>
+            <div class="input-wrap">
+                <label for="password">New password</label>
+                <input type="password" placeholder="********" name="password" required />
+            </div>
+            <div class="input-wrap">
+                <label for="password2">Confirm password</label>
+                <input type="password" placeholder="********" name="password2" required />
+            </div>
+            <button type="submit">Submit changes</button>
+        </form>
+        <p>You can now <a href="/users/dashboard">return to shop</a> ! </p>
+    </div>
+</body>
+
+</html>
