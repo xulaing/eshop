@@ -179,7 +179,7 @@ paypal.configure({
 
 
 // go to /index to see the index.html page where you can choose to push the payment button
-app.get('/', (req, res) => res.sendFile(__dirname + "/index.html"));
+app.get('/payment', (req, res) => res.sendFile(__dirname + "/index.html"));
 
 
 
@@ -190,8 +190,8 @@ app.post('/pay', (req, res) => {
           "payment_method": "paypal"
       },
       "redirect_urls": {
-          "return_url": "http://localhost:3000/success",
-          "cancel_url": "http://localhost:3000/cancel"
+          "return_url": "http://localhost:4000/success",
+          "cancel_url": "http://localhost:4000/cancel"
       },
       "transactions": [{
           "item_list": {
@@ -252,7 +252,7 @@ app.post('/pay', (req, res) => {
 
   app.get('/cancel', (req, res) => res.send('Cancelled'));
 
-app.listen(3000, () => console.log(`Server Started on 3000`));
+// app.listen(3000, () => console.log(`Server Started on 3000`));
 
 
 
