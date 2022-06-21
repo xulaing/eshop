@@ -231,7 +231,7 @@ app.post('/pay', (req, res) => {
           throw error;
       } else {
           console.log(JSON.stringify(payment));
-          res.send('Success');
+          res.send('Success'); 
       }
   });
   });
@@ -250,7 +250,7 @@ app.post('/pay', (req, res) => {
       
       });
 
-  app.get('/cancel', (req, res) => res.send('Cancelled'));
+  app.get('/cancel', (req, res) => res.redirect("/users/dashboard"));
 
 // app.listen(3000, () => console.log(`Server Started on 3000`));
 
