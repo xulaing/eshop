@@ -28,8 +28,8 @@ var mongoose = require('mongoose');
 const app = express();
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+   console.log(`Server running on port ${PORT}`);
+   });
 var routes = require('./routes/index');
 var routes_cart = require('./routes/cart');
 /********************************** */
@@ -167,6 +167,7 @@ function checkNotAuthenticated(req, res, next) {
 }
 
 
+// Payment
 
 const paypal = require('paypal-rest-sdk');
 
@@ -177,7 +178,7 @@ paypal.configure({
 });
 
 
-
+// go to /index to see the index.html page where you can choose to push the payment button
 app.get('/', (req, res) => res.sendFile(__dirname + "/index.html"));
 
 
