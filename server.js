@@ -140,7 +140,8 @@ app.get("/users/administrator", checkAdministrator, (req, res) => {
     } else {
       const users = response.rows;
       console.log(users);
-      res.render("admin", { users: users })
+      console.log(req.user);
+      res.render("admin", { users: users, admin: req.user })
     }
   })
 })
