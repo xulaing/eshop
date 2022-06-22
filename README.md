@@ -1,3 +1,6 @@
+# Site web : boutique en ligne 
+# Tech : Express JS, MongoDB, PostgreSQL, NodeJS
+
 ## Lancer l'application
 
 - npm install
@@ -6,7 +9,7 @@
 Il est possible que vous devriez installer nodemon : <br />
 npm install nodemon -g
 
-## Créer une base de donnée (Postgres)
+## Créer une base de données pour l'authentification (Postgres)
 
 Vous pouvez modifier les informations de votre base de donnée dans le fichier .env <br />
 N'oubliez pas de créer votre base de donnée (ici, appelée "eshop") et votre table "users" :
