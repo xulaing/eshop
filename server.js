@@ -218,11 +218,11 @@ app.post("/user-delete", checkAdministrator, (req, res) => {
         else {
           const users = response.rows;
           res.render("admin", { users: users, currentUser: req.user })
-            }
-          })
         }
       })
     }
+  })
+}
 )
 
 app.get("/cart", checkNotAuthenticated, async (req, res) => {
@@ -245,6 +245,43 @@ app.get("/cart", checkNotAuthenticated, async (req, res) => {
       })
     }
   })
+})
+
+app.post("/update_quantity", checkNotAuthenticated, async (req, res) => {
+  const quantity = req.body.quantity;
+  const product_id = req.query.product_id;
+  const old_quantity = await (await pool.query('select product_quantity from cart where product_id = $1 and user_id = $2', [product_id, req.user.id])).rows[0].product_quantity;
+  const user = req.user;
+  const stock = await (await pool.query('select stock from products where id = $1', [product_id])).rows[0].stock;
+  console.log(stock)
+  if (stock > 0) {
+    pool.query(
+      `select * from cart where user_id = $1 and product_id = $2`,
+      [user.id, product_id],
+      (err, response) => {
+        if (err) {
+          throw err;
+        }
+        if (response.rows.length > 0) {
+          pool.query(
+            `update cart set product_quantity = $3 where user_id = $1 and product_id = $2`, [user.id, product_id, quantity],
+            (err, response) => {
+              if (err) {
+                throw err;
+              } else {
+                pool.query('update products set stock = stock + $2  where id = $1', [product_id, old_quantity])
+                pool.query('update products set stock = stock - $2  where id = $1', [product_id, quantity])
+                req.flash("sucess_msg", "Product added");
+                res.redirect("/cart");
+              }
+            }
+          )
+        }
+      }
+    )
+  } else {
+    alert('Product is no longer available')
+  }
 })
 
 app.post("/product-delete", checkNotAuthenticated, (req, res) => {
@@ -277,6 +314,8 @@ app.post("/product-delete", checkNotAuthenticated, (req, res) => {
     }
   })
 })
+
+
 
 app.get("/users/profile", checkNotAuthenticated, (req, res) => {
   var query = "SELECT id, name, email, level from users"
@@ -358,70 +397,94 @@ paypal.configure({
 app.get('/payment', (req, res) => res.sendFile(__dirname + "/index.html"));
 
 
-app.post('/pay', (req, res) => {
-    const total = req.query.total
-    const create_payment_json = {
-      "intent": "sale",
-      "payer": {
-          "payment_method": "paypal"
+app.post('/pay', checkNotAuthenticated, (req, res) => {
+  const total = req.query.total
+  const create_payment_json = {
+    "intent": "sale",
+    "payer": {
+      "payment_method": "paypal"
+    },
+    "redirect_urls": {
+      "return_url": "http://localhost:8085/success",
+      "cancel_url": "http://localhost:8085/cancel"
+    },
+    "transactions": [{
+      "item_list": {
+        "items": [{
+          "price": total,
+          "currency": "USD",
+          "quantity": 1
+        }]
       },
-      "redirect_urls": {
-          "return_url": "http://localhost:8085/success",
-          "cancel_url": "http://localhost:8085/cancel"
+      "amount": {
+        "currency": "USD",
+        "total": total
       },
-      "transactions": [{
-          "item_list": {
-              "items": [{
-                  "price": total,
-                  "currency": "USD",
-                  "quantity": 1
-              }]
-          },
-          "amount": {
-              "currency": "USD",
-              "total": total
-          },
-          "description": ""
-      }]
+      "description": ""
+    }]
   };
 
   app.get('/success', (req, res) => {
     const payerId = req.query.PayerID;
     const paymentId = req.query.paymentId;
-  
+
     const execute_payment_json = {
       "payer_id": payerId,
       "transactions": [{
-          "amount": {
-              "currency": "USD",
-              "total": total
-          }
+        "amount": {
+          "currency": "USD",
+          "total": total
+        }
       }]
     };
-  
+
     paypal.payment.execute(paymentId, execute_payment_json, function (error, payment) {
       if (error) {
-          console.log(error.response);
-          throw error;
+        console.log(error.response);
+        throw error;
       } else {
-          console.log(JSON.stringify(payment));
-          res.send('Success'); 
-      }
-  });
-  });
-
-    paypal.payment.create(create_payment_json, function (error, payment) {
-        if (error) {
-            throw error;
-        } else {
-            for(let i = 0;i < payment.links.length;i++){
-              if(payment.links[i].rel === 'approval_url'){
-                res.redirect(payment.links[i].href);
+        console.log(JSON.stringify(payment));
+        const query = 'select * from cart where user_id = $1'
+        pool.query(query, [req.user.id], async (err, response) => {
+          if (err) {
+            throw err;
+          } else {
+            const datetime = new Date();
+            pool.query('insert into order_data (user_id, datetime) values ($1, $2)', [req.user.id, datetime], async (err, dataResponse) => {
+              if (err) {
+                throw err;
+              } else {
+                const order_id = await (await pool.query('select order_id from order_data where user_id = $1 and datetime = $2', [req.user.id, datetime])).rows[0]
+                for (let row of response.rows) {
+                  const product_query = 'insert into order_product values ($1, $2, $3)';
+                  pool.query(product_query, [order_id.order_id, row.product_id, row.product_quantity], async (err, productResponse) => {
+                    if (err) {
+                      throw err;
+                    }
+                  })
+                }
+                await pool.query('delete from cart where user_id = $1', [req.user.id]);
               }
-            }
+            })
+            res.redirect("/products")
+          }
+        })
+      }
+    });
+  });
+
+  paypal.payment.create(create_payment_json, function (error, payment) {
+    if (error) {
+      throw error;
+    } else {
+      for (let i = 0; i < payment.links.length; i++) {
+        if (payment.links[i].rel === 'approval_url') {
+          res.redirect(payment.links[i].href);
         }
-      });
+      }
+    }
+  });
 
-      });
+});
 
-  app.get('/cancel', (req, res) => res.redirect("/users/dashboard"));
+app.get('/cancel', (req, res) => res.redirect("/users/dashboard"));
