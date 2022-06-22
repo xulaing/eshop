@@ -29,6 +29,8 @@ app.use(flash());
 
 app.set("view engine", "ejs");
 
+app.use('/img', express.static(__dirname + '/assets'));
+
 app.get("/", (req, res) => {
   res.render("index");
 });
@@ -49,6 +51,27 @@ app.get("/users/logout", (req, res) => {
   req.logout();
   res.render("index", { message: "You have logged out successfully" });
 });
+
+app.get("/products", async (req, res) => {
+  const products = await (await pool.query('select * from products')).rows;
+  console.log(products);
+  res.render("products", { products: products, currentUser: req.user });
+});
+
+app.post("/add_product", checkNotAuthenticated, async (req, res) => {
+  const { product_id, product_quantity, product_name, product_price } = req.body;
+  const user = req.user;
+  pool.query(
+    `insert into cart values ($1, $2, $3, $4, $5)`, [user.id, product_id, product_quantity, product_price, product_name],
+    (err, response) => {
+      if (err) {
+        throw err;
+      } else {
+        req.flash("sucess_msg", "Product added");
+      }
+    }
+  )
+})
 
 app.post("/users/register", async (req, res) => {
   let { username, email, password, password2 } = req.body;
@@ -137,26 +160,39 @@ app.get("/users/administrator", checkAdministrator, (req, res) => {
     if (err) {
       console.log('here');
       throw err;
-    } 
+    }
     else {
       const users = response.rows;
       console.log(users);
       console.log(req.user);
-      res.render("admin", { users: users, admin: req.user })
+      res.render("admin", { users: users, currentUser: req.user })
     }
   })
 })
 
-app.get("/users/profile", checkAdministrator, (req, res) => {
+/* app.post("/users/administrator", checkAdministrator, (req, res) => {
+  var query = "delete from users where id= $1"
+  pool.query(query, [req.user.id], (err, response) => {
+    if (err) {
+      throw err;
+    }
+    else {
+      req.flash("succes_msg", "User deleted")
+      res.redirect("/users/administrator");
+      }
+  })
+});*/
+
+app.get("/users/profile", checkNotAuthenticated, (req, res) => {
   var query = "SELECT id, name, email, level from users"
   pool.query(query, (err, response) => {
     if (err) {
       throw err;
     } else {
-      res.render("profile", { name: req.user.name, email: req.user.email });
+      res.render("profile", { name: req.user.name, email: req.user.email, currentUser: req.user });
     }
   })
-})
+});
 
 app.post("/users/profile", async (req, res) => {
   let { email, username, password, password2 } = req.body;
@@ -167,19 +203,19 @@ app.post("/users/profile", async (req, res) => {
   }
   if (errors.length > 0) {
     res.render("profile", { name, email, errors });
-  } 
+  }
   else {
     hashedPassword = await bcrypt.hash(password, 10);
     let query = "update users set name='" + username + "', password='" + hashedPassword + "' where email='" + email + "'";
     pool.query(
-    query,
-    (err, response) => {
-    if (err) {
-      throw err;
-    }
-    req.flash("sucess_msg", "Modifications saved !");
-    res.redirect("/users/profile");
-    });
+      query,
+      (err, response) => {
+        if (err) {
+          throw err;
+        }
+        req.flash("sucess_msg", "Modifications saved !");
+        res.redirect("/users/profile");
+      });
   }
 });
 

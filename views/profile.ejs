@@ -8,39 +8,34 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../css/style.css">
     <link rel="stylesheet" href="../css/profile.css">
+    <link rel="stylesheet" href="../css/nav.css">
 </head>
 
 <body>
-    <nav>
-        <div id="shop">
-            <a href="/users/dashboard">Shopping</a>
-        </div>
-        <div id="management">
-            <a href="">Cart</a>
-            <a href="/users/profile">Account</a>
-        </div>
-    </nav>
-    <h1 id="profile"><%= name%> Profile</h1>
-    <div class="page">
-        <form action="/users/profile" method="POST">
-            
-            <h2>Update Informations</h2>
-            <% if(messages.sucess_msg){ %>
-                <p class="sucess">
-                    <%= messages.sucess_msg %>
-                </p>
-                <% } %>
+    <%- include('partial/nav.ejs') %>
+        <h1>
+            <%= name%> Profile
+        </h1>
+        <div class="page">
+            <form action="/users/profile" method="POST">
 
-                    <% if(messages.error){ %>
-                        <p class="error">
-                            <%= messages.error %>
-                        </p>
-                        <% } %>
+                <h2>Update Informations</h2>
+                <% if(messages.sucess_msg){ %>
+                    <p class="sucess">
+                        <%= messages.sucess_msg %>
+                    </p>
+                    <% } %>
+
+                        <% if(messages.error){ %>
+                            <p class="error">
+                                <%= messages.error %>
+                            </p>
+                            <% } %>
 
                                 <div class="input-wrap">
                                     <label for="email">Confirm email</label>
                                     <input type="email" placeholder="<%= email%>" name="email" required />
-                                </div> 
+                                </div>
                                 <div class="input-wrap">
                                     <label for="username">New username</label>
                                     <input type="text" placeholder="<%= name%>" name="username" required />
@@ -54,9 +49,10 @@
                                     <input type="password" placeholder="********" name="password2" required />
                                 </div>
                                 <button type="submit">Submit changes</button>
-        </form>
-        <p>You can now <a href="/users/dashboard">return to shop</a> ! </p>
-    </div>
+            </form>
+            <p>You can now <a href="/users/dashboard">return to shop</a> ! </p>
+            <a href="/users/logout">logout</a>
+        </div>
 </body>
 
 </html>

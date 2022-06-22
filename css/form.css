@@ -4,7 +4,7 @@ html {
   margin: 0 !important;
 }
 .page {
-  background: radial-gradient(circle, rgba(255,212,231,1) 0%, rgba(187,148,233,1) 100%);
+  background: radial-gradient(circle, rgba(220,255,206,1) 0%, rgba(97,184,228,1) 100%);
   height: 100%;
   background-position: center;
   background-repeat: no-repeat;

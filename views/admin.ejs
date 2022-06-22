@@ -8,49 +8,43 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../css/style.css">
     <link rel="stylesheet" href="../css/admin.css">
+    <link rel="stylesheet" href="../css/nav.css">
 </head>
 
 <body>
-    <nav>
-        <div id="shop">
-            <a href="/users/dashboard">Shopping</a>
-        </div>
-        <div id="management">
-            <a href="">Cart</a>
-            <a href="">Account</a>
-            <%if(admin.level===0){%>
-                <a href="#">Admin</a>
-                <%}%>
-        </div>
-    </nav>
-    <div class="page">
-        <table id="table">
-            <tr>
-                <td>id</td>
-                <td>name</td>
-                <td>email</td>
-                <td>level</td>
-            </tr>
-
-            <% Object.values(users).forEach(function(user){%>
+    <%- include('partial/nav.ejs') %>
+        <div class="page">
+            <table id="table">
                 <tr>
-                    <td>
-                        <%= user.id %>
-                    </td>
-                    <td>
-                        <%= user.name %>
-                    </td>
-                    <td>
-                        <%= user.email %>
-                    </td>
-                    <td>
-                        <%= user.level %>
-                    </td>
+                    <td>id</td>
+                    <td>name</td>
+                    <td>email</td>
+                    <td>level</td>
                 </tr>
-                <%})%>
-        </table>
-        <p>You have nothing to do here anymore. Please <a href="/users/logout">logout</a></p>
-    </div>
+
+                <% Object.values(users).forEach(function(user){%>
+                    <tr>
+                        <td>
+                            <%= user.id %>
+                        </td>
+                        <td>
+                            <%= user.name %>
+                        </td>
+                        <td>
+                            <%= user.email %>
+                        </td>
+                        <td>
+                            <%= user.level %>
+                        </td>
+                        <td>
+                            <form action="/users/administrator" method="POST">
+                                <button type="submit">DELETE</button>
+                            </form>
+                        </td>
+                    </tr>
+                    <%})%>
+            </table>
+        </div>
 </body>
 
 </html>

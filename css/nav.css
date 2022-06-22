@@ -1,0 +1,34 @@
+
+nav{
+    background: white;
+    box-shadow: 0 1px 1px rgba(0,0,0,0.11), 
+              0 2px 2px rgba(0,0,0,0.11), 
+              0 4px 4px rgba(0,0,0,0.11);
+
+    margin-bottom: 40px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 10px 30px;
+}
+
+nav a {
+    text-decoration: none;
+    text-transform: uppercase;
+    font-size: 16px;
+    color: rgb(46, 46, 103);
+}
+
+#management a {
+    padding: 0px 10px;
+}
+
+#shop, #management {
+    display: flex;
+    align-items: center;
+}
+
+.logo {
+    height: 30px;
+    padding-right: 40px;
+}
