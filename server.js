@@ -345,6 +345,7 @@ app.listen(PORT, () => {
 // Payment
 
 const paypal = require('paypal-rest-sdk');
+const { CommandCompleteMessage } = require("pg-protocol/dist/messages");
 
 paypal.configure({
   'mode': 'sandbox', //sandbox or live
@@ -358,6 +359,7 @@ app.get('/payment', (req, res) => res.sendFile(__dirname + "/index.html"));
 
 
 app.post('/pay', (req, res) => {
+    const total = req.query.total
     const create_payment_json = {
       "intent": "sale",
       "payer": {
@@ -370,18 +372,16 @@ app.post('/pay', (req, res) => {
       "transactions": [{
           "item_list": {
               "items": [{
-                  "name": "Red Sox Hat",
-                  "sku": "001",
-                  "price": "25.00",
+                  "price": total,
                   "currency": "USD",
                   "quantity": 1
               }]
           },
           "amount": {
               "currency": "USD",
-              "total": "25.00"
+              "total": total
           },
-          "description": "Hat for the best team ever"
+          "description": ""
       }]
   };
 
@@ -394,7 +394,7 @@ app.post('/pay', (req, res) => {
       "transactions": [{
           "amount": {
               "currency": "USD",
-              "total": "25.00"
+              "total": total
           }
       }]
     };

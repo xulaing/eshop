@@ -49,7 +49,7 @@
                         <p>Livraison gratuite pour le lancement de la boutique ! </p>
                 </p>
                 <form
-                    action="/pay" method="POST">
+                    action="/pay?total=<%= total %>" method="POST">
                     <button type="submit">Go to Payment</button>
                 </form>
             </div>
