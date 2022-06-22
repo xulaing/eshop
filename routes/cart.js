@@ -5,13 +5,16 @@ var path = require('path');
 const product = require("../models/product");
 var router = express.Router();
 var Product = require('../models/product');
+var Order = require('../models/order');
+var Cart = require('../models/cart');
+
 /* The shop showing all the articles */ 
 router.get('/', function(req, res, next) {
-  Product.find(function(err, products){ 
-    console.log("getting the articles from shopping database");
-    res.render('./user/cart', {title:'Shopping cart', products: products});
-  });
+  //var cart = new Cart(req.session.cart);
+  res.render('./shop/shopping-cart'); //{products: cart.generateArray(), totalPrice: cart.totalPrice});
 });
+
+
 module.exports = router
 
 

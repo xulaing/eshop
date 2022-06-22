@@ -13,6 +13,7 @@ var logger = require('morgan');
 var bodyParser = require("body-parser");
 var hbs = require('express-handlebars');
 var mongoose = require('mongoose');
+const MongoStore = require('connect-mongo');
 //var bootstrap = require('bootstrap');
 
 (async ()=>{
@@ -65,13 +66,19 @@ app.use(
     secret: "secret",
     resave: false,
     saveUninitialized: false,
+    //store:MongoStore.create({ mongoUrl: 'mongodb://localhost/test-app' }),
+    //cookie: { maxAge: 180 * 60 * 1000}, 
   })
 );
-
 app.use(passport.initialize());
 app.use(passport.session());
-
 app.use(flash());
+
+app.use(function(req, res, next) {
+  res.locals.login = req.isAuthenticated();
+  res.locals.session = req.session;
+  next();
+});
 
 
 app.get("/account", (req, res) => {
