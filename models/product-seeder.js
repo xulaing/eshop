@@ -4,28 +4,32 @@ var path = require('path');
 var mongoose = require('mongoose');
 var products = [
     new Product({
-    imagePath: 'https://fs-prod-cdn.nintendo-europe.com/media/images/10_share_images/portals_3/SI_Hub_Zelda_Portal_image1280w.jpg',
-    title: 'Zelda',
-    description: 'Awesome Game !!!',
-    price: 50,
+        imagePath: 'https://fs-prod-cdn.nintendo-europe.com/media/images/10_share_images/portals_3/SI_Hub_Zelda_Portal_image1280w.jpg',
+        title: 'Zelda',
+        description: 'Awesome Game !!!',
+        price: 50,
+      //  qty:1
     }),
     new Product({
         imagePath: 'https://fs-prod-cdn.nintendo-europe.com/media/images/10_share_images/portals_3/SI_Hub_Zelda_Portal_image1280w.jpg',
         title: 'Zelda',
         description: 'Awesome Game !!!',
         price: 50,
+       // qty:1
     }),
     new Product({
         imagePath: 'https://fs-prod-cdn.nintendo-europe.com/media/images/10_share_images/portals_3/SI_Hub_Zelda_Portal_image1280w.jpg',
         title: 'Zelda',
         description: 'Awesome Game !!!',
         price: 50,
+      //  qty:1
     }),
     new Product({
         imagePath: 'https://fs-prod-cdn.nintendo-europe.com/media/images/10_share_images/portals_3/SI_Hub_Zelda_Portal_image1280w.jpg',
         title: 'Zelda',
         description: 'Awesome Game !!!',
         price: 50,
+      //  qty:1
     })
 ];
 

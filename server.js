@@ -2,7 +2,8 @@
 const express = require("express");
 const { pool } = require("./dbConfig");
 var favicon = require('serve-favicon');
-const session = require("express-session");
+var app = express();
+var session = require("express-session");
 const flash = require("express-flash");
 const passport = require("passport");
 const bcrypt = require("bcrypt");
@@ -14,7 +15,8 @@ var bodyParser = require("body-parser");
 var hbs = require('express-handlebars');
 var mongoose = require('mongoose');
 const MongoStore = require('connect-mongo');
-//var bootstrap = require('bootstrap');
+var bootstrap = require('bootstrap-vue');
+
 
 (async ()=>{
   try{
@@ -26,7 +28,6 @@ const MongoStore = require('connect-mongo');
 })();
 
 
-const app = express();
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => {
    console.log(`Server running on port ${PORT}`);
@@ -61,13 +62,15 @@ initializePassport(passport);
 app.use("/public/stylesheets", express.static("/public/stylesheets"));
 app.use(express.urlencoded({ extended: false }));
 
+//app.set('trust proxy', 1); // trust first proxy
+
 app.use(
   session({
     secret: "secret",
     resave: false,
     saveUninitialized: false,
-    //store:MongoStore.create({ mongoUrl: 'mongodb://localhost/test-app' }),
-    //cookie: { maxAge: 180 * 60 * 1000}, 
+    store: new MongoStore({ mongoUrl : 'mongodb://localhost:27017/shopping' }),
+    cookie: { maxAge: 180 * 60 * 1000}, 
   })
 );
 app.use(passport.initialize());

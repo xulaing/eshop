@@ -1,51 +1,51 @@
 <!DOCTYPE html PUBLIC "HTML 4.01//EN">
 <html>
     <head>
-  {{>head}}
-</head>
+        {{>head}}
+    </head>
 <body>
-<header>
-  {{>header}}
-</header>
+    <header>
+    {{>header}}
+    </header>
+    {{# if products }}
+        <div class="row">
+            <div class="col-sn-6 col-nd-6 col-nd-offset-3 col-sn-offset-3">
+                <ul class="list-group">
+                    {{# each products }}
+                        <li class="list-group-item clearfix">
+                            <div class="col-xs-5">
+                                <strong>{{ this.item.title }}</strong><br/>
+                                <em>{{{this.item.description}}}</em>
+                            </div>
+                            <div class="col-xs-2 text-right">
+                                <span class="badge">{{ this.qty }}</span>
+                            </div>
+                            <div class="col-xs-3 text-right">
+                                {{ this.price }} CHF
+                            </div>
+                            <div class="col-xs-2 text-right">
+                                <a href="/remove/{{this.item.id}}" class="btn btn-default"></i> Remove</a>
+                            </div>
+                        </li>
+                    {{/each}}
+                </ul>
+            </div>
+            <div class="text-right">
+                <strong>Total: {{ totalPrice }} €</strong>
+            </div>
+        <hr>
+        <div class="text-right">
+            <a href="/payment" type="button" class="btn btn-success">Go to payment</a>
+        </div>
+    {{ else }}
+        Your shopping cart is empty.
+        <div class="text-right">
+            <a href="/payment" type="button" class="btn btn-success">Go to payment</a>
+        </div>
+    {{/if}}
 
-{{# if products_added }}
-    <div class="cart page">
-        <ul class="list-group">
-            {{# each products_added }}
-                <li class="list-group-item clearfix">
-                    <div class="col-xs-5">
-                        <strong>{{ this.item.title }}</strong><br/>
-                        <em>{{{this.item.description}}}</em>
-                    </div>
-                    <div class="col-xs-2 text-right">
-                        <span class="badge">{{ this.quantity }}</span>
-                    </div>
-                    <div class="col-xs-3 text-right">
-                        {{ this.price }} CHF
-                    </div>
-                    <div class="col-xs-2 text-right">
-                        <a href="/remove/{{this.item.id}}" class="btn btn-default"></i> Remove</a>
-                    </div>
-                </li>
-            {{/each}}
-        </ul>
-    </div>
-    <div class="text-right">
-        <strong>Total: {{ totalPrice }} €</strong>
-    </div>
-    <hr>
-    <div class="text-right">
-        <a href="/payment" type="button" class="btn btn-success">Go to payment</a>
-    </div>
-{{ else }}
-    Your shopping cart is empty.
-    <div class="text-right">
-        <a href="/payment" type="button" class="btn btn-success">Go to payment</a>
-    </div>
-{{/if}}
-
-<footer>
-    {{>footer}}
-</footer>
+    <footer>
+        {{>footer}}
+    </footer>
 </body>
 </html>

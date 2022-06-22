@@ -7,6 +7,20 @@ const product = require("../models/product");
 var router = express.Router();
 var Product = require('../models/product');
 var Cart = require('../models/cart');
+var session = require("express-session");
+var mongoose = require('mongoose');
+const MongoStore = require('connect-mongo');
+
+router.use(
+  session({
+    secret: "secret",
+    resave: false,
+    saveUninitialized: false,
+    store: new MongoStore({ mongoUrl : 'mongodb://localhost:27017/shopping' }),
+    cookie: { maxAge: 180 * 60 * 1000}, 
+  })
+);
+
 
 /* The shop showing all the articles */ 
 router.get('/', function(req, res, next) {
@@ -18,25 +32,19 @@ router.get('/', function(req, res, next) {
 });
 
 router.get('/add-to-cart/:id', function(req, res, next) {
-  var productId = req.params.id; 
-	var cart = new Cart(req.session.cart ? req.session.cart : {});
-  console.log(req.session.cart);
-
-  Product.findById(productId, function(err, product) {
+  var productId = req.params.id;
+  console.log("inside add to cart");
+  var cart = new Cart(req.session.cart ? req.session.cart : {});
+  Product.findById(productId, function(err, product){
     if (err){
       return res.redirect('/');
     }
-    else{
-      cart.add(product, product.id);
-      req.session.cart = cart;
-      console.log(req.session.cart);
-      res.redirect('/');
-    }
-   
-  })
+    cart.add(product, product.id);
+    req.session.cart = cart;
+    console.log(req.session.cart + "added to cart");
+    res.redirect('/cart');
+  });
 });
-
-
 
 
 module.exports = router
