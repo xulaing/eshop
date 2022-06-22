@@ -17,12 +17,12 @@ html {
 }
 
 p {
-  font-family: "Poppins", sans-serif;
+  font-family: system-ui, sans-serif;
   font-size: 12px;
 }
 
 a {
-  font-family: "Poppins", sans-serif;
+  font-family: system-ui, sans-serif;
   color: black;
   font-size: 12px;
 }
@@ -65,13 +65,72 @@ nav a {
 }
   
 .error {
-    font-family: "Poppins", sans-serif;
+    font-family: system-ui, sans-serif;
     color: red;
     margin: 0;
 }
 
 .sucess {
-    font-family: "Poppins", sans-serif;
+    font-family: system-ui, sans-serif;
     color: green;
     margin: 0;
+}
+
+#profile{
+  text-align: left;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: white;
+  border-radius: 10px;
+}
+
+h2 {
+  font-family: system-ui, sans-serif;
+  font-weight: 700;
+  font-size: 25px;
+  margin-top: 0;
+  color: #2f2f2f;
+}
+
+.input-wrap {
+  display: flex;
+  flex-direction: column;
+  padding-top: 20px;
+}
+
+label {
+  font-family: system-ui, sans-serif;
+  font-weight: 600;
+  font-size: 16px;
+  color: #575656;
+}
+
+input {
+  font-family: system-ui, sans-serif;
+  font-size: 14px;
+  color: rgba(255, 115, 127, 1);
+  line-height: 1.2;
+  border: none;
+  border-bottom: 1px #333333 solid;
+  background: transparent;
+  padding-top: 6px;
+  outline: none;
+}
+
+button {
+  background: radial-gradient(circle, rgba(255,212,231,1) 0%, rgba(187,148,233,1) 100%);
+  font-family: system-ui, sans-serif;
+  font-size: 14px;
+  color: black;
+  line-height: 1.2;
+  text-transform: uppercase;
+  border: none;
+  padding: 5px 30px;
+  border-radius: 999px;
+  margin: 20px 0px;
+  width: auto;
 }

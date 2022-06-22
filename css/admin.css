@@ -17,12 +17,12 @@ html {
 }
 
 p {
-  font-family: "Poppins", sans-serif;
+  font-family: system-ui, sans-serif;
   font-size: 12px;
 }
 
 a {
-  font-family: "Poppins", sans-serif;
+  font-family: system-ui, sans-serif;
   color: black;
   font-size: 12px;
 }
