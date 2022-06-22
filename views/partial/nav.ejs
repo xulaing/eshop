@@ -1,0 +1,13 @@
+<nav>
+    <div id="shop">
+        <img class="logo" src="/img/logo.png" alt="logo" href="/">
+        <a href="/users/dashboard">Shopping</a>
+    </div>
+    <div id="management">
+        <%if(currentUser && currentUser.level===0){%>
+            <a href="/users/administrator">Admin</a>
+            <%}%>
+                <a href="/users/profile">Account</a>
+                <a href="">Cart</a>
+    </div>
+</nav>
