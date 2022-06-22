@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="../css/style.css">
     <link rel="stylesheet" href="../css/admin.css">
     <link rel="stylesheet" href="../css/nav.css">
+    <link rel="stylesheet" href="../css/cart.css">
 </head>
 
 <body>
@@ -16,34 +17,38 @@
         <div class="page">
             <table id="table">
                 <tr>
-                    <td>id</td>
-                    <td>name</td>
-                    <td>email</td>
-                    <td>level</td>
+                    <td>Produit</td>
+                    <td>Quantité</td>
+                    <td>Prix</td>
+                    <td></td>
                 </tr>
 
-                <% Object.values(users).forEach(function(user){%>
+                <% Object.values(productsCart).forEach(function(product){%>
                     <tr>
                         <td>
-                            <%= user.id %>
+                            <%= product.product_name %>
                         </td>
                         <td>
-                            <%= user.name %>
+                            <%= product.product_quantity %>
                         </td>
                         <td>
-                            <%= user.email %>
+                            <%= product.product_price %>
                         </td>
                         <td>
-                            <%= user.level %>
-                        </td>
-                        <td>
-                            <form action="/user-delete?id=<%= user.id %>" method="POST">
-                                <button type="submit">DELETE</button>
+                            <form
+                                action="/product-delete?product_id=<%= product.product_id %>&product_quantity=<%= product.product_quantity %>"
+                                method="POST">
+                                <button type="submit">Delete</button>
                             </form>
                         </td>
                     </tr>
                     <%})%>
             </table>
+            <div class="column">
+                <p>Total = <%= total %>
+                        <p>Livraison gratuite pour le lancement de la boutique ! </p>
+                </p>
+            </div>
         </div>
 </body>
 
