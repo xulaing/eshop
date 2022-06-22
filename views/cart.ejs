@@ -29,7 +29,15 @@
                             <%= product.product_name %>
                         </td>
                         <td>
-                            <%= product.product_quantity %>
+                            <form method="post" action="/update_quantity?product_id=<%= product.product_id %>">
+                                <span class="input-number-decrement"
+                                    onclick="this.parentNode.querySelector('input[type=number]').stepDown()">&#45;</span>
+                                <input class="quantity" type="number" name="quantity"
+                                    value="<%= product.product_quantity %>" min="1">
+                                <span class="input-number-increment"
+                                    onclick="this.parentNode.querySelector('input[type=number]').stepUp()">&#43;</span>
+                                <button type="submit">Save</button>
+                            </form>
                         </td>
                         <td>
                             <%= product.product_price %>
@@ -48,6 +56,9 @@
                 <p>Total = <%= total %>
                         <p>Livraison gratuite pour le lancement de la boutique ! </p>
                 </p>
+                <form action="/purchase" method="POST">
+                    <button type="submit">Buy</button>
+                </form>
             </div>
         </div>
 </body>

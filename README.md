@@ -40,8 +40,19 @@ N'oubliez pas de créer votre base de donnée (ici, appelée "eshop") et votre t
   product_id BIGSERIAL NOT NULL,
   product_name VARCHAR(200) NOT NULL,
   product_price MONEY NOT NULL,
-  product_quantity INTEGER NOT NULL,
-  UNIQUE(user_id)
+  product_quantity INTEGER NOT NULL
+  );
+
+- CREATE TABLE order_product (
+  order_id BIGSERIAL NOT NULL,
+  product_id BIGSERIAL NOT NULL,
+  product_quantity INTEGER NOT NULL
+  );
+
+- CREATE TABLE order_data (
+  order_id BIGSERIAL PRIMARY KEY NOT NULL,
+  user_id BIGSERIAL NOT NULL,
+  datetime VARCHAR NOT NULL
   );
 
 Voici quelques produits que nous vous proposons d'ajouter à la boutique :

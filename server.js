@@ -54,7 +54,7 @@ app.get("/users/logout", (req, res) => {
 });
 
 app.get("/products", async (req, res) => {
-  const products = await (await pool.query('select * from products')).rows;
+  const products = await (await pool.query('select * from products order by id')).rows;
   res.render("products", { products: products, currentUser: req.user });
 });
 
@@ -224,6 +224,43 @@ app.get("/cart", checkNotAuthenticated, async (req, res) => {
   })
 })
 
+app.post("/update_quantity", checkNotAuthenticated, async (req, res) => {
+  const quantity = req.body.quantity;
+  const product_id = req.query.product_id;
+  const old_quantity = await (await pool.query('select product_quantity from cart where product_id = $1 and user_id = $2', [product_id, req.user.id])).rows[0].product_quantity;
+  const user = req.user;
+  const stock = await (await pool.query('select stock from products where id = $1', [product_id])).rows[0].stock;
+  console.log(stock)
+  if (stock > 0) {
+    pool.query(
+      `select * from cart where user_id = $1 and product_id = $2`,
+      [user.id, product_id],
+      (err, response) => {
+        if (err) {
+          throw err;
+        }
+        if (response.rows.length > 0) {
+          pool.query(
+            `update cart set product_quantity = $3 where user_id = $1 and product_id = $2`, [user.id, product_id, quantity],
+            (err, response) => {
+              if (err) {
+                throw err;
+              } else {
+                pool.query('update products set stock = stock + $2  where id = $1', [product_id, old_quantity])
+                pool.query('update products set stock = stock - $2  where id = $1', [product_id, quantity])
+                req.flash("sucess_msg", "Product added");
+                res.redirect("/cart");
+              }
+            }
+          )
+        }
+      }
+    )
+  } else {
+    alert('Product is no longer available')
+  }
+})
+
 app.post("/product-delete", checkNotAuthenticated, (req, res) => {
   var query = "delete from cart where user_id = $1 and product_id=$2"
   pool.query(query, [req.user.id, req.query.product_id], async (err, response) => {
@@ -251,6 +288,34 @@ app.post("/product-delete", checkNotAuthenticated, (req, res) => {
           })
         }
       })
+    }
+  })
+})
+
+app.post("/purchase", checkNotAuthenticated, (req, res) => {
+  const query = 'select * from cart where user_id = $1'
+  pool.query(query, [req.user.id], async (err, response) => {
+    if (err) {
+      throw err;
+    } else {
+      const datetime = new Date();
+      pool.query('insert into order_data (user_id, datetime) values ($1, $2)', [req.user.id, datetime], async (err, dataResponse) => {
+        if (err) {
+          throw err;
+        } else {
+          const order_id = await (await pool.query('select order_id from order_data where user_id = $1 and datetime = $2', [req.user.id, datetime])).rows[0]
+          for (let row of response.rows) {
+            const product_query = 'insert into order_product values ($1, $2, $3)';
+            pool.query(product_query, [order_id.order_id, row.product_id, row.product_quantity], async (err, productResponse) => {
+              if (err) {
+                throw err;
+              }
+            })
+          }
+          await pool.query('delete from cart where user_id = $1', [req.user.id]);
+        }
+      })
+      res.redirect("/products")
     }
   })
 })
