@@ -25,7 +25,9 @@
                             <p class="price">
                                 <%=product.price%>
                             </p>
-                            <button>Ajouter au panier</button>
+                            <form method="post" action="/add_products?product_id=<%= product.id %>">
+                                <button type="submit">Add to cart</button>
+                            </form>
                         </div>
                         <%}%>
                             <%}%>

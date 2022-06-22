@@ -1,0 +1,14 @@
+.page{
+    display: grid;
+    grid-template-columns: 3fr 1fr;
+    grid-template-rows: auto;
+    grid-column-gap: 20px;
+}
+
+table{
+    align-self: start;
+}
+
+.column {    
+    align-self: start;
+}

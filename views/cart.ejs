@@ -1,0 +1,53 @@
+<!DOCTYPE html PUBLIC "HTML 4.01//EN">
+<html>
+
+<head>
+    <title>Sécurité informatique</title>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/admin.css">
+    <link rel="stylesheet" href="../css/nav.css">
+    <link rel="stylesheet" href="../css/cart.css">
+</head>
+
+<body>
+    <%- include('partial/nav.ejs') %>
+        <div class="page">
+            <table id="table">
+                <tr>
+                    <td>Produit</td>
+                    <td>Quantité</td>
+                    <td>Prix</td>
+                    <td></td>
+                </tr>
+
+                <% Object.values(productsCart).forEach(function(product){%>
+                    <tr>
+                        <td>
+                            <%= product.product_name %>
+                        </td>
+                        <td>
+                            <%= product.product_quantity %>
+                        </td>
+                        <td>
+                            <%= product.product_price %>
+                        </td>
+                        <td>
+                            <form action="/product-delete?product_id=<%= product.product_id %>" method="POST">
+                                <button type="submit">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                    <%})%>
+            </table>
+            <div class="column">
+                <p>Total = <%= total %>
+                        <p>Livraison gratuite pour le lancement de la boutique ! </p>
+                </p>
+            </div>
+        </div>
+</body>
+
+</html>
