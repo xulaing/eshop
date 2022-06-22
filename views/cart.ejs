@@ -35,7 +35,9 @@
                             <%= product.product_price %>
                         </td>
                         <td>
-                            <form action="/product-delete?product_id=<%= product.product_id %>" method="POST">
+                            <form
+                                action="/product-delete?product_id=<%= product.product_id %>&product_quantity=<%= product.product_quantity %>"
+                                method="POST">
                                 <button type="submit">Delete</button>
                             </form>
                         </td>

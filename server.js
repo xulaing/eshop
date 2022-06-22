@@ -5,6 +5,7 @@ const session = require("express-session");
 const flash = require("express-flash");
 const passport = require("passport");
 const bcrypt = require("bcrypt");
+var alert = require('alert');
 
 const initializePassport = require("./passportConfig");
 
@@ -58,46 +59,53 @@ app.get("/products", async (req, res) => {
 });
 
 app.post("/add_products", checkNotAuthenticated, async (req, res) => {
-  console.log("oui")
   const product_id = req.query.product_id;
   const product_name = await (await pool.query('select product_name from products where id = $1', [product_id])).rows[0].product_name;
   const product_price = await (await pool.query('select price from products where id = $1', [product_id])).rows[0].price;
   console.log(product_price, product_name, product_id)
   const user = req.user;
-  pool.query(
-    `select * from cart where user_id = $1 and product_id = $2`,
-    [user.id, product_id],
-    (err, response) => {
-      if (err) {
-        throw err;
-      }
-      if (response.rows.length > 0) {
-        pool.query(
-          `update cart set product_quantity = product_quantity + 1 where user_id = $1 and product_id = $2`, [user.id, product_id],
-          (err, response) => {
-            if (err) {
-              throw err;
-            } else {
-              req.flash("sucess_msg", "Product added");
-              res.redirect("/products");
+  const stock = await (await pool.query('select stock from products where id = $1', [product_id])).rows[0].stock;
+  console.log(stock)
+  if (stock > 0) {
+    pool.query(
+      `select * from cart where user_id = $1 and product_id = $2`,
+      [user.id, product_id],
+      (err, response) => {
+        if (err) {
+          throw err;
+        }
+        if (response.rows.length > 0) {
+          pool.query(
+            `update cart set product_quantity = product_quantity + 1 where user_id = $1 and product_id = $2`, [user.id, product_id],
+            (err, response) => {
+              if (err) {
+                throw err;
+              } else {
+                pool.query('update products set stock = stock - 1 where id = $1', [product_id])
+                req.flash("sucess_msg", "Product added");
+                res.redirect("/products");
+              }
             }
-          }
-        )
-      } else {
-        pool.query(
-          `insert into cart values ($1, $2, $3, $4, $5)`, [user.id, product_id, product_name, product_price, 1],
-          (err, response) => {
-            if (err) {
-              throw err;
-            } else {
-              req.flash("sucess_msg", "Product added");
-              res.redirect("/products");
+          )
+        } else {
+          pool.query(
+            `insert into cart values ($1, $2, $3, $4, $5)`, [user.id, product_id, product_name, product_price, 1],
+            (err, response) => {
+              if (err) {
+                throw err;
+              } else {
+                pool.query('update products set stock = stock - 1 where id = $1', [product_id])
+                req.flash("sucess_msg", "Product added");
+                res.redirect("/products");
+              }
             }
-          }
-        )
+          )
+        }
       }
-    }
-  )
+    )
+  } else {
+    alert('Product is no longer available')
+  }
 })
 
 app.post("/users/register", async (req, res) => {
@@ -203,11 +211,12 @@ app.get("/cart", checkNotAuthenticated, async (req, res) => {
     else {
       const productsCart = response.rows;
       const sumQuery = 'select sum(product_price * product_quantity) as sum from cart where user_id = $1';
-      pool.query(sumQuery, [req.user.id], (err, response) => {
+      pool.query(sumQuery, [req.user.id], (err, responseTotal) => {
         if (err) {
           return res.redirect(403, "Cart is empty");
         }
         else {
+          const total = responseTotal.rows[0];
           res.render("cart", { productsCart: productsCart, total: total.sum, currentUser: req.user })
         }
       })
@@ -217,11 +226,12 @@ app.get("/cart", checkNotAuthenticated, async (req, res) => {
 
 app.post("/product-delete", checkNotAuthenticated, (req, res) => {
   var query = "delete from cart where user_id = $1 and product_id=$2"
-  pool.query(query, [req.user.id, req.query.product_id], (err, response) => {
+  pool.query(query, [req.user.id, req.query.product_id], async (err, response) => {
     if (err) {
       throw err;
     }
     else {
+      await pool.query('update products set stock = stock + $1 where id = $2', [req.query.product_quantity, req.query.product_id]);
       var query = "select * from cart where user_id = $1"
       pool.query(query, [req.user.id], (err, response) => {
         if (err) {
@@ -230,11 +240,12 @@ app.post("/product-delete", checkNotAuthenticated, (req, res) => {
         else {
           const productsCart = response.rows;
           const sumQuery = 'select sum(product_price * product_quantity) as sum from cart where user_id = $1';
-          pool.query(sumQuery, [req.user.id], (err, response) => {
+          pool.query(sumQuery, [req.user.id], (err, responseTotal) => {
             if (err) {
               return res.redirect(403, "Cart is empty");
             }
             else {
+              const total = responseTotal.rows[0];
               res.render("cart", { productsCart: productsCart, total: total.sum, currentUser: req.user })
             }
           })
