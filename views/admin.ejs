@@ -39,7 +39,31 @@
                     </tr>
                     <%})%>
             </table>
-            <p>You have nothing to do here anymore. Please <a href="/users/logout">logout</a></p>
+            <table id="productTable">
+                <tr>
+                    <td>user</td>
+                    <td>datetime</td>
+                    <td>product Id</td>
+                    <td>quantity</td>
+                </tr>
+
+                <% Object.values(orders).forEach(function(order){%>
+                    <tr>
+                        <td>
+                            <%= order.user_id %>
+                        </td>
+                        <td>
+                            <%= order.datetime %>
+                        </td>
+                        <td>
+                            <%= order.product_id %>
+                        </td>
+                        <td>
+                            <%= order.product_quantity %>
+                        </td>
+                    </tr>
+                    <%})%>
+            </table>
         </div>
 </body>
 

@@ -33,3 +33,8 @@ table{
     border-radius: 20px;
     background: rgb(238, 238, 238);
 }
+
+
+#productTable{
+  margin-top: 20px;
+}

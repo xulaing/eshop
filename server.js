@@ -197,7 +197,16 @@ app.get("/users/administrator", checkAdministrator, (req, res) => {
     }
     else {
       const users = response.rows;
-      res.render("admin", { users: users, currentUser: req.user })
+      var queryOrder = "SELECT * from order_data join order_product on order_data.order_id = order_product.order_id order by datetime";
+      pool.query(queryOrder, (err, responseOrder) => {
+        if (err) {
+          throw err;
+        }
+        else {
+          const orders = responseOrder.rows;
+          res.render("admin", { users: users, orders: orders, currentUser: req.user })
+        }
+      })
     }
   })
 })

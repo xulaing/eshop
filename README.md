@@ -41,18 +41,33 @@ N'oubliez pas de créer votre base de donnée (ici, appelée "eshop") et votre t
   product_name VARCHAR(200) NOT NULL,
   product_price MONEY NOT NULL,
   product_quantity INTEGER NOT NULL
+  constraint fk_user_id
+  foreign key (user_id)
+  REFERENCES users (id)
+  constraint fk_product_id
+  foreign key (product_id)
+  REFERENCES products (id)
   );
 
 - CREATE TABLE order_product (
   order_id BIGSERIAL NOT NULL,
   product_id BIGSERIAL NOT NULL,
   product_quantity INTEGER NOT NULL
+  constraint fk_order_id
+  foreign key (order_id)
+  REFERENCES order_data (order_id)
+  constraint fk_product_id
+  foreign key (product_id)
+  REFERENCES products (id)
   );
 
 - CREATE TABLE order_data (
   order_id BIGSERIAL PRIMARY KEY NOT NULL,
   user_id BIGSERIAL NOT NULL,
   datetime VARCHAR NOT NULL
+  constraint fk_user_id
+  foreign key (user_id)
+  REFERENCES users (id)
   );
 
 Voici quelques produits que nous vous proposons d'ajouter à la boutique :
